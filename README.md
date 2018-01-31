@@ -1,0 +1,8 @@
+# 2018 GRADUATION PROJECT(SAFE HOUSE) SERVER SIDE
+
+## INSTALLATION
+
+~~~
+yarn install
+node index.js
+~~~
