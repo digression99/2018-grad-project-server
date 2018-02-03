@@ -2,7 +2,7 @@
 # node modules
 /node_modules
 
-# playground (test codes)
+# playground (test codes and data)
 /playground
 
 # webstorm .idea

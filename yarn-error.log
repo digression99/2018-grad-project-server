@@ -1,8 +1,8 @@
 Arguments: 
-  /usr/local/Cellar/node/9.3.0_1/bin/node /usr/local/Cellar/yarn/1.3.2/libexec/bin/yarn.js add pify
+  /usr/local/Cellar/node/9.3.0_1/bin/node /usr/local/Cellar/yarn/1.3.2/libexec/bin/yarn.js add body-parser
 
 PATH: 
-  /Users/kimilsik/Downloads/google-cloud-sdk/bin:/Applications/NuSMV-2.6.0-Darwin/bin:/Users/kimilsik/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+  /Users/kimilsik/Downloads/google-cloud-sdk/bin:/Applications/NuSMV-2.6.0-Darwin/bin:/Users/kimilsik/.npm-global/bin:/Users/kimilsik/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
 
 Yarn version: 
   1.3.2
@@ -29,6 +29,7 @@ npm manifest:
       "mongoose": "^5.0.0-rc1",
       "nexmo": "^2.2.0",
       "node-kmeans": "^1.1.0",
+      "pify": "^3.0.0",
       "request": "^2.83.0",
       "utm-converter": "^0.1.1"
     }
@@ -1229,11 +1230,12 @@ Lockfile:
     version "0.6.1"
     resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.1.tgz#2b327184e8992101177b28563fb5e7102acd0ca9"
   
-  nexmo@^2.1.1:
-    version "2.1.1"
-    resolved "https://registry.yarnpkg.com/nexmo/-/nexmo-2.1.1.tgz#3ead64582c7c698fa6a20465df4e33d119148499"
+  nexmo@^2.2.0:
+    version "2.2.0"
+    resolved "https://registry.yarnpkg.com/nexmo/-/nexmo-2.2.0.tgz#27d20458071915f0e3b8090eaf4d5c12ae05a53b"
     dependencies:
       jsonwebtoken "^7.1.9"
+      request "^2.83.0"
       uuid "^2.0.2"
   
   node-forge@^0.7.1:
@@ -1970,4 +1972,4 @@ Lockfile:
       y18n "^3.2.0"
 
 Trace: 
-  Error: EACCES: permission denied, mkdir '/Users/kimilsik/WebstormProjects/2018-grad-project-server/node_modules/abbrev'
+  Error: EACCES: permission denied, unlink '/Users/kimilsik/WebstormProjects/2018-grad-project-server/node_modules/.yarn-integrity'

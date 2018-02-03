@@ -7,7 +7,7 @@ const {getDetectedFace,
     trimFaceImageScale,
     makeFaceMatrix,
     imageProcessToMatrix,
-    faceDetect} = require('../apis/face-detection');
+    faceDetect} = require('../api/face-detection');
 
 // const files = fs.readdirSync(path.join(__dirname, 'testset4'))
 // fs.readdir(path.join(__dirname, 'testset4'), (err, files) => {
