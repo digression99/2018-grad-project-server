@@ -5,7 +5,7 @@ const pify = require('pify');
 
 // const vision = Vision();
 const client = new vision.ImageAnnotatorClient();
-const request = {image: {source: {filename: path.join(__dirname, 'testset4/camera00000021.jpg')}}};
+const request = {image: {source: {filename: path.join(__dirname, 'test_set4_jh/camera00000021.jpg')}}};
 client
     .faceDetection(request)
     .then(results => {
@@ -29,7 +29,7 @@ client
         console.error('ERROR:', err);
     });
 //
-// fs.readFile(path.join(__dirname, 'testset4/camera.jpg'), (err, data) => {
+// fs.readFile(path.join(__dirname, 'test_set4_jh/camera.jpg'), (err, data) => {
 //     if (err) return console.log(err);
 //     // console.log(typeof data);
 //     const imgBase64 = new Buffer(data).toString('base64');

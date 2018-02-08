@@ -30,14 +30,6 @@ const getDetectedFace = (image) => new Promise((resolve, reject) => {
         });
 });
 
-const getDetectedFaceFromFile = (image) => new Promise((resolve, reject) => {
-    try {
-        resolve();
-    } catch (e) {
-        reject(e);
-    }
-});
-
 const trimFaceImageRotation = (faceImageMatrix, pan, tilt, roll) =>
     new Promise((resolve, reject) => {
         const panCos = math.cos(math.unit(-pan, 'deg'));
@@ -73,6 +65,7 @@ const trimFaceImageRotation = (faceImageMatrix, pan, tilt, roll) =>
 
 const trimFaceImageScale = (faceImageMatrix, faceWidth) => new Promise((resolve, reject) => {
     try {
+        // scale matrix.
         const ratio = 1000 / faceWidth;
         const result = math.multiply(faceImageMatrix, ratio);
         return resolve(result);
@@ -150,7 +143,7 @@ const detectedFaceToVector = face => new Promise(async (resolve, reject) => {
         const localizedMatrix = localizeMatrix(faceMatrix);
         const rotationTrimmedMatrix = await trimFaceImageRotation(localizedMatrix, face.panAngle, face.tiltAngle, face.rollAngle);
 
-        const faceRectangle = result.fdBoundingPoly.vertices;
+        const faceRectangle = face.fdBoundingPoly.vertices;
         const faceWidth = faceRectangle[1].x - faceRectangle[0].x;
 
         const scaleTrimmedMatrix = await trimFaceImageScale(rotationTrimmedMatrix, faceWidth);
@@ -162,7 +155,21 @@ const detectedFaceToVector = face => new Promise(async (resolve, reject) => {
     }
 });
 
-const clusterData = vectors => pify(kmeans.clusterize)(vectors, {k: 1});
+// const clusterData = vectors => pify(kmeans.clusterize)(vectors, {k: 1});
+
+const clusterData = vectors => {
+    let sumArr = [];
+    for (let i = 0; i < vectors[0].length; ++i) sumArr.push(0);
+
+    for (let i = 0; i < vectors.length; ++i) {
+        for (let j = 0; j < vectors[i].length; ++j)
+            sumArr[j] += vectors[i][j];
+    }
+
+    return [{centroid : sumArr.map(dat => dat / vectors.length)}];
+};
+
+
 
 // const faceDetect = async (images) => {
 //     let promiseArr = [];
@@ -208,6 +215,5 @@ module.exports = {
     makeFaceMatrix,
     detectedFaceToVector,
     // faceDetect,
-    getDetectedFaceFromFile,
     clusterData
 };

@@ -6,7 +6,7 @@ let config = {
 };
 
 const envConfig = require('./config.json')[env];
-console.log(envConfig);
+// console.log(envConfig);
 
 Object.keys(envConfig).forEach(key => config[key] = envConfig[key]);
 

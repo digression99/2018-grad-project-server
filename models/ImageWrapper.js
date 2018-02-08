@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 const Image = require('./Image');
 const ProcessedDatum = require('./ProcessedDatum');
 
-const ImagesSchema = new mongoose.Schema({
+const ImageWrapperSchema = new mongoose.Schema({
     images : { // ids.
-        type : [String],
+        type : [mongoose.Schema.Types.ObjectId],
         required : true
     },
     processedData : {
-        type : [String],
+        type : [mongoose.Schema.Types.ObjectId],
         required : true
     },
     detectedTime : {
@@ -17,7 +17,6 @@ const ImagesSchema = new mongoose.Schema({
     }
 });
 
+let ImageWrapper = mongoose.model('imageWrapper', ImageWrapperSchema);
 
-let Images = mongoose.model('user', ImagesSchema);
-
-module.exports = Images;
+module.exports = ImageWrapper;

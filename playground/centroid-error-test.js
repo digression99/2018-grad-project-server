@@ -51,10 +51,14 @@ const centroid2 = [
         50.553391114145164,
         31.140320247023528
 ];
-let error = 0;
 
-for (let i = 0; i < centroid1.length; ++i) {
-    error += Math.pow(centroid1[i] - centroid2[i], 2);
-}
+const getMinError = (centroid1, centroid2) => {
+    let error = 0;
+
+    for (let i = 0; i < centroid1.length; ++i) {
+        error += Math.pow(centroid1[i] - centroid2[i], 2);
+    }
+    return error;
+};
 
 console.log(error);

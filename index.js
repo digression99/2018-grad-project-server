@@ -11,6 +11,10 @@ const userRouter = require('./routes/user');
 mongoose.Promise = global.Promise;
 mongoose.connect(config.MONGODB_URI);
 
+process.on('uncaughtException', (err) => {
+    console.log('uncaught exception : ', err);
+});
+
 const app = express();
 
 app.use(express.static(path.join(__dirname, '/public')));
@@ -18,10 +22,6 @@ app.use(bodyParser.json());
 
 app.use('/api', apiRouter);
 app.use('/user', userRouter);
-
-// app.on('error', (e) => {
-//     console.log(e);
-// });
 
 app.get('*', (req, res) => {
     res.send('index.html');

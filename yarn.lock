@@ -107,6 +107,10 @@ acorn@^4.0.0:
   version "4.0.13"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-4.0.13.tgz#105495ae5361d697bd195c825192e1ad7f253787"
 
+acorn@^5.1.1:
+  version "5.4.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-5.4.1.tgz#fdc58d9d17f4a4e98d102ded826a9b9759125102"
+
 ajv@^4.9.1:
   version "4.11.8"
   resolved "https://registry.yarnpkg.com/ajv/-/ajv-4.11.8.tgz#82ffb02b29e662ae53bdc20af15947706739c536"
@@ -274,6 +278,12 @@ brace-expansion@^1.1.7:
   dependencies:
     balanced-match "^1.0.0"
     concat-map "0.0.1"
+
+brain.js@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/brain.js/-/brain.js-1.0.4.tgz#cfce86de4716bff3d1c48b95ff5766e774c09a54"
+  dependencies:
+    gpu.js "^1.0.0"
 
 bson@~1.0.4:
   version "1.0.4"
@@ -770,6 +780,12 @@ google-proto-files@^0.14.1:
     power-assert "^1.4.4"
     prettier "^1.10.2"
     protobufjs "^6.8.0"
+
+gpu.js@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/gpu.js/-/gpu.js-1.0.0.tgz#97c268dfb37048d49670aa71862382bd2a5c86dd"
+  dependencies:
+    acorn "^5.1.1"
 
 graceful-fs@^4.1.2:
   version "4.1.11"
@@ -1873,7 +1889,7 @@ uuid@^2.0.2:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
-uuid@^3.0.0, uuid@^3.1.0:
+uuid@^3.0.0, uuid@^3.1.0, uuid@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.2.1.tgz#12c528bb9d58d0b9265d9a2f6f0fe8be17ff1f14"
 

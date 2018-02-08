@@ -4,10 +4,10 @@ const path = require('path');
 
 // const vision = Vision();
 const client = new vision.ImageAnnotatorClient();
-const request = {image: {source: {filename: path.join(__dirname, 'testset4/camera00000001.jpg')}}};
+// const request = {image: {source: {filename: path.join(__dirname, 'test_set4_jh/camera00000001.jpg')}}};
 
-const srcFolderName = "testset1";
-const destFolderName = "data_set2";
+const srcFolderName = "test_set4_jh";
+const destFolderName = "data_set4";
 
 fs.readdir(path.join(__dirname, srcFolderName), (err, files) => {
     if (err) return console.log(err);
@@ -16,17 +16,11 @@ fs.readdir(path.join(__dirname, srcFolderName), (err, files) => {
         const data = fs.readFileSync(path.join(__dirname, `${srcFolderName}/${file}`));
         const imgBase64 = new Buffer(data).toString('base64');
 
-        client
-            .faceDetection(
+        client.faceDetection(
                 {
                     image : {
                         content : imgBase64
                     }
-                    // , features : [
-                    //     {
-                    //         type
-                    //     }
-                    // ]
                 }
             )
             .then(results => {
