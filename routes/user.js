@@ -140,12 +140,13 @@ router.post('/face-register', async (req, res) => { // 얼굴 등록
     const email = req.body.email;
 
     try {
-        const result = await processImagesToCentroid(images, detectedTime);
+        // const result = await processImagesToCentroid(images, detectedTime);
+
 
         const foundUser = await User.findByEmail(email);
         const updatedUser = await foundUser.update({
             email,
-            centroid: result.centroid,
+            // centroid: result.centroid,
             imageWrapperId: result.imageWrapperId
         });
         console.log('user saved.');
@@ -154,12 +155,35 @@ router.post('/face-register', async (req, res) => { // 얼굴 등록
             updatedUser,
             success: true
         });
+
     } catch (e) {
         res.json({
             e,
             success: false
         });
     }
+    //
+    // try {
+    //     const result = await processImagesToCentroid(images, detectedTime);
+    //
+    //     const foundUser = await User.findByEmail(email);
+    //     const updatedUser = await foundUser.update({
+    //         email,
+    //         centroid: result.centroid,
+    //         imageWrapperId: result.imageWrapperId
+    //     });
+    //     console.log('user saved.');
+    //
+    //     res.json({
+    //         updatedUser,
+    //         success: true
+    //     });
+    // } catch (e) {
+    //     res.json({
+    //         e,
+    //         success: false
+    //     });
+    // }
 });
 
 module.exports = router;

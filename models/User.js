@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const uuidv1 = require('uuid/v1');
+const net = require('../api/neural-network');
 
 let UserSchema = new mongoose.Schema({
-    centroid : {
-        type : [Number],
-        required : false,
-    },
+    // centroid : {
+    //     type : [Number],
+    //     required : false,
+    // },
     email : {
         type : String,
         required : true,

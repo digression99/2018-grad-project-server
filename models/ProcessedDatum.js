@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const net = require('../api/neural-network');
 
 const ProcessedDatumSchema = new mongoose.Schema({
     processedDatum : {

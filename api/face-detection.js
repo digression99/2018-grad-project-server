@@ -4,6 +4,9 @@ const math = require('mathjs');
 const kmeans = require('node-kmeans');
 const pify = require('pify');
 
+const LANDMARK_LENGTH = 34; // MAX 34
+const NOSE_POS = 7;
+
 // const vision = Vision();
 // const getDetectedFace = (image) => vision.faceDetection({content : image});
 const client = new vision.ImageAnnotatorClient();
@@ -63,12 +66,28 @@ const trimFaceImageRotation = (faceImageMatrix, pan, tilt, roll) =>
         return resolve(afterRoll);
     });
 
-const trimFaceImageScale = (faceImageMatrix, faceWidth) => new Promise((resolve, reject) => {
+const trimFaceImageScale = (matrix, faceWidth, faceHeight) => new Promise((resolve, reject) => {
     try {
         // scale matrix.
-        const ratio = 1000 / faceWidth;
-        const result = math.multiply(faceImageMatrix, ratio);
-        return resolve(result);
+        const ratioX = 1000 / faceWidth;
+        const ratioY = 1000 / faceHeight;
+        // const result = math.multiply(matrix, ratio);
+
+        // const noseX = matrix.subset(math.index(NOSE_POS, 0));
+        // const noseY = matrix.subset(math.index(NOSE_POS, 1));
+        // const noseZ = matrix.subset(math.index(NOSE_POS, 2));
+
+        for (let i = 0; i < LANDMARK_LENGTH; ++i) {
+            const orgX = matrix.subset(math.index(i, 0));
+            const orgY = matrix.subset(math.index(i, 1));
+            const orgZ = matrix.subset(math.index(i, 2));
+
+            matrix.subset(math.index(i, 0), orgX * ratioX);
+            matrix.subset(math.index(i, 1), orgY * ratioY);
+            matrix.subset(math.index(i, 2), orgZ * ratioY);
+        }
+
+        return resolve(matrix);
     } catch (e) {
         reject(e);
     }
@@ -76,33 +95,15 @@ const trimFaceImageScale = (faceImageMatrix, faceWidth) => new Promise((resolve,
 
 const makeFaceMatrix = (result) => new Promise((resolve, reject) => {
     try {
-        const leftEyePosX = result.landmarks[0].position.x;
-        const leftEyePosY = result.landmarks[0].position.y;
-        const leftEyePosZ = result.landmarks[0].position.z;
+        let landmarksArr = [];
+        for (let i = 0; i < LANDMARK_LENGTH; ++i) {
+            landmarksArr.push([
+                result.landmarks[i].position.x,
+                result.landmarks[i].position.y,
+                result.landmarks[i].position.z,]);
+        }
 
-        const rightEyePosX = result.landmarks[1].position.x;
-        const rightEyePosY = result.landmarks[1].position.y;
-        const rightEyePosZ = result.landmarks[1].position.z;
-
-        const noseTipPosX = result.landmarks[8].position.x;
-        const noseTipPosY = result.landmarks[8].position.y;
-        const noseTipPosZ = result.landmarks[8].position.z;
-
-        const mouthCenterPosX = result.landmarks[12].position.x;
-        const mouthCenterPosY = result.landmarks[12].position.y;
-        const mouthCenterPosZ = result.landmarks[12].position.z;
-
-        const midPointBetweenEyesX = result.landmarks[6].position.x;
-        const midPointBetweenEyesY = result.landmarks[6].position.y;
-        const midPointBetweenEyesZ = result.landmarks[6].position.z;
-
-        const faceMatrix = math.matrix([
-            [leftEyePosX, leftEyePosY, leftEyePosZ],
-            [rightEyePosX, rightEyePosY, rightEyePosZ],
-            [midPointBetweenEyesX, midPointBetweenEyesY, midPointBetweenEyesZ],
-            [noseTipPosX, noseTipPosY, noseTipPosZ],
-            [mouthCenterPosX, mouthCenterPosY, mouthCenterPosZ]
-        ]);
+        const faceMatrix = math.matrix(landmarksArr);
 
         resolve(faceMatrix);
     } catch (e) {
@@ -112,11 +113,11 @@ const makeFaceMatrix = (result) => new Promise((resolve, reject) => {
 
 const localizeMatrix = (matrix) => {
 
-    const noseX = matrix.subset(math.index(3, 0));
-    const noseY = matrix.subset(math.index(3, 1));
-    const noseZ = matrix.subset(math.index(3, 2));
+    const noseX = matrix.subset(math.index(NOSE_POS, 0));
+    const noseY = matrix.subset(math.index(NOSE_POS, 1));
+    const noseZ = matrix.subset(math.index(NOSE_POS, 2));
 
-    for (let i = 0; i < 5; ++i) {
+    for (let i = 0; i < LANDMARK_LENGTH; ++i) {
         const orgX = matrix.subset(math.index(i, 0));
         const orgY = matrix.subset(math.index(i, 1));
         const orgZ = matrix.subset(math.index(i, 2));
@@ -143,10 +144,12 @@ const detectedFaceToVector = face => new Promise(async (resolve, reject) => {
         const localizedMatrix = localizeMatrix(faceMatrix);
         const rotationTrimmedMatrix = await trimFaceImageRotation(localizedMatrix, face.panAngle, face.tiltAngle, face.rollAngle);
 
-        const faceRectangle = face.fdBoundingPoly.vertices;
+        // const faceRectangle = face.fdBoundingPoly.vertices;
+        const faceRectangle = face.boundingPoly.vertices;
         const faceWidth = faceRectangle[1].x - faceRectangle[0].x;
+        const faceHeight = faceRectangle[2].y - faceRectangle[0].y;
 
-        const scaleTrimmedMatrix = await trimFaceImageScale(rotationTrimmedMatrix, faceWidth);
+        const scaleTrimmedMatrix = await trimFaceImageScale(rotationTrimmedMatrix, faceWidth, faceHeight);
 
         resolve(makeMatrixToVector(scaleTrimmedMatrix));
         // change faceWidth to 1000.

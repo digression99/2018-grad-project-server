@@ -6,8 +6,8 @@ const path = require('path');
 const client = new vision.ImageAnnotatorClient();
 // const request = {image: {source: {filename: path.join(__dirname, 'test_set4_jh/camera00000001.jpg')}}};
 
-const srcFolderName = "test_set4_jh";
-const destFolderName = "data_set4";
+const srcFolderName = "test_set7_jg";
+const destFolderName = "data_set7";
 
 fs.readdir(path.join(__dirname, srcFolderName), (err, files) => {
     if (err) return console.log(err);
