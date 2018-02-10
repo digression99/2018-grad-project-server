@@ -10,6 +10,10 @@ const {
 } = require('../api/face-detection');
 const uuidv1 = require('uuid/v1');
 
+const {imagesToValues} = require('../api/utility');
+
+const net = require('../api/neural-network');
+
 let router = express.Router();
 
 router.post('/register', async (req, res) => { // 걍가입
@@ -134,6 +138,25 @@ const processImagesToCentroid = (images, detectedTime) => new Promise(async (res
     }
 });
 
+const processImagesAndRegister = (images, detectedTime, email) => new Promise(async (resolve, reject) => {
+    try {
+        const res = await imagesToValues(images, detectedTime);
+        let obj = {};
+        obj[`${email}`] = 1;
+        const result = await net.register(res.values, obj);
+        // const result = await net.detect(values);
+        console.log("result : ", result);
+
+        resolve({
+            result,
+            imageWrapperId :res.imageWrapperId
+        });
+
+    } catch (e) {
+        reject(e);
+    }
+});
+
 router.post('/face-register', async (req, res) => { // 얼굴 등록
     const images = req.body.images;
     const detectedTime = req.body.detectedTime; // time when took the images.
@@ -141,13 +164,13 @@ router.post('/face-register', async (req, res) => { // 얼굴 등록
 
     try {
         // const result = await processImagesToCentroid(images, detectedTime);
-
+        const res = await processImagesAndRegister(images, detectedTime, email);
 
         const foundUser = await User.findByEmail(email);
         const updatedUser = await foundUser.update({
-            email,
+            // email,
             // centroid: result.centroid,
-            imageWrapperId: result.imageWrapperId
+            imageWrapperId: res.imageWrapperId
         });
         console.log('user saved.');
 
@@ -155,35 +178,12 @@ router.post('/face-register', async (req, res) => { // 얼굴 등록
             updatedUser,
             success: true
         });
-
     } catch (e) {
         res.json({
             e,
             success: false
         });
     }
-    //
-    // try {
-    //     const result = await processImagesToCentroid(images, detectedTime);
-    //
-    //     const foundUser = await User.findByEmail(email);
-    //     const updatedUser = await foundUser.update({
-    //         email,
-    //         centroid: result.centroid,
-    //         imageWrapperId: result.imageWrapperId
-    //     });
-    //     console.log('user saved.');
-    //
-    //     res.json({
-    //         updatedUser,
-    //         success: true
-    //     });
-    // } catch (e) {
-    //     res.json({
-    //         e,
-    //         success: false
-    //     });
-    // }
 });
 
 module.exports = router;

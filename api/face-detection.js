@@ -1,26 +1,22 @@
 const vision = require('@google-cloud/vision');
-// const kmeans = require('node-kmeans');
 const math = require('mathjs');
-const kmeans = require('node-kmeans');
 const pify = require('pify');
 
 const LANDMARK_LENGTH = 34; // MAX 34
 const NOSE_POS = 7;
 
-// const vision = Vision();
-// const getDetectedFace = (image) => vision.faceDetection({content : image});
 const client = new vision.ImageAnnotatorClient();
 // const request = {image: {source: {filename: path.join(__dirname, 'testset4/camera00000017.jpg')}}};
 
 const getDetectedFace = (image) => new Promise((resolve, reject) => {
     client
         .faceDetection({
-                image: {content: image}
-                // , features : [
-                //     {
-                //         type
-                //     }
-                // ]
+            image: {content: image}
+            // , features : [
+            //     {
+            //         type
+            //     }
+            // ]
         })
         .then(result => {
             if (!result[0].faceAnnotations) throw new Error("not a face.");
@@ -51,7 +47,6 @@ const trimFaceImageRotation = (faceImageMatrix, pan, tilt, roll) =>
             [0, tiltCos, -tiltSin],
             [0, tiltSin, tiltCos]
         ]);
-
         let afterTilt = math.multiply(afterPan, tiltRotationMatrix);
 
         const rollCos = math.cos(math.unit(roll, 'deg'));
@@ -60,7 +55,6 @@ const trimFaceImageRotation = (faceImageMatrix, pan, tilt, roll) =>
             [rollCos, -rollSin, 0],
             [rollSin, rollCos, 0],
             [0, 0, 1]]);
-
         let afterRoll = math.multiply(afterTilt, rollRotationMatrix);
 
         return resolve(afterRoll);
@@ -71,26 +65,37 @@ const trimFaceImageScale = (matrix, faceWidth, faceHeight) => new Promise((resol
         // scale matrix.
         const ratioX = 1000 / faceWidth;
         const ratioY = 1000 / faceHeight;
-        // const result = math.multiply(matrix, ratio);
-
-        // const noseX = matrix.subset(math.index(NOSE_POS, 0));
-        // const noseY = matrix.subset(math.index(NOSE_POS, 1));
-        // const noseZ = matrix.subset(math.index(NOSE_POS, 2));
+        const ratioZ = ratioY;
 
         for (let i = 0; i < LANDMARK_LENGTH; ++i) {
             const orgX = matrix.subset(math.index(i, 0));
             const orgY = matrix.subset(math.index(i, 1));
             const orgZ = matrix.subset(math.index(i, 2));
 
-            matrix.subset(math.index(i, 0), orgX * ratioX);
-            matrix.subset(math.index(i, 1), orgY * ratioY);
-            matrix.subset(math.index(i, 2), orgZ * ratioY);
+            let scaledX = orgX * ratioX;
+            let scaledY = orgY * ratioY;
+            let scaledZ = orgZ * ratioZ;
+            //
+            // // modification.
+            // if (scaledX > 1.0) scaledX = 1;
+            // if (scaledY > 1.0) scaledY = 1;
+            // if (scaledZ > 1.0) scaledZ = 1;
+
+            matrix.subset(math.index(i, 0), scaledX);
+            matrix.subset(math.index(i, 1), scaledY);
+            matrix.subset(math.index(i, 2), scaledZ);
         }
 
         return resolve(matrix);
     } catch (e) {
         reject(e);
     }
+});
+
+const imagesToVectors = (images) => new Promise((resolve, reject) => {
+    // db?
+    // return
+    resolve();
 });
 
 const makeFaceMatrix = (result) => new Promise((resolve, reject) => {
@@ -100,12 +105,9 @@ const makeFaceMatrix = (result) => new Promise((resolve, reject) => {
             landmarksArr.push([
                 result.landmarks[i].position.x,
                 result.landmarks[i].position.y,
-                result.landmarks[i].position.z,]);
+                result.landmarks[i].position.z]);
         }
-
-        const faceMatrix = math.matrix(landmarksArr);
-
-        resolve(faceMatrix);
+        resolve(math.matrix(landmarksArr));
     } catch (e) {
         reject(e);
     }
@@ -135,43 +137,44 @@ const makeMatrixToVector = (matrix) => {
     return normalizedVector;
 };
 
+const normalizeVector = v => v.map(dat => {
+    let val = (dat / 1000) + 0.5;
+    if (val > 1.0) val = 1;
+    return val;
+}); // better to have here.
+
 const detectedFaceToVector = face => new Promise(async (resolve, reject) => {
     try {
-        // const result = await getDetectedFace(image);
-
         const faceMatrix = await makeFaceMatrix(face);
 
         const localizedMatrix = localizeMatrix(faceMatrix);
         const rotationTrimmedMatrix = await trimFaceImageRotation(localizedMatrix, face.panAngle, face.tiltAngle, face.rollAngle);
 
-        // const faceRectangle = face.fdBoundingPoly.vertices;
         const faceRectangle = face.boundingPoly.vertices;
         const faceWidth = faceRectangle[1].x - faceRectangle[0].x;
         const faceHeight = faceRectangle[2].y - faceRectangle[0].y;
 
         const scaleTrimmedMatrix = await trimFaceImageScale(rotationTrimmedMatrix, faceWidth, faceHeight);
+        const vec = makeMatrixToVector(scaleTrimmedMatrix);
+        resolve(normalizeVector(vec));
 
-        resolve(makeMatrixToVector(scaleTrimmedMatrix));
-        // change faceWidth to 1000.
+        // resolve(makeMatrixToVector(scaleTrimmedMatrix));
     } catch (e) {
         reject(e);
     }
 });
 
-// const clusterData = vectors => pify(kmeans.clusterize)(vectors, {k: 1});
-
-const clusterData = vectors => {
-    let sumArr = [];
-    for (let i = 0; i < vectors[0].length; ++i) sumArr.push(0);
-
-    for (let i = 0; i < vectors.length; ++i) {
-        for (let j = 0; j < vectors[i].length; ++j)
-            sumArr[j] += vectors[i][j];
-    }
-
-    return [{centroid : sumArr.map(dat => dat / vectors.length)}];
-};
-
+// const clusterData = vectors => {
+//     let sumArr = [];
+//     for (let i = 0; i < vectors[0].length; ++i) sumArr.push(0);
+//
+//     for (let i = 0; i < vectors.length; ++i) {
+//         for (let j = 0; j < vectors[i].length; ++j)
+//             sumArr[j] += vectors[i][j];
+//     }
+//
+//     return [{centroid: sumArr.map(dat => dat / vectors.length)}];
+// };
 
 
 // const faceDetect = async (images) => {
@@ -218,5 +221,5 @@ module.exports = {
     makeFaceMatrix,
     detectedFaceToVector,
     // faceDetect,
-    clusterData
+    // clusterData
 };
