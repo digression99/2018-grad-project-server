@@ -92,12 +92,6 @@ const trimFaceImageScale = (matrix, faceWidth, faceHeight) => new Promise((resol
     }
 });
 
-const imagesToVectors = (images) => new Promise((resolve, reject) => {
-    // db?
-    // return
-    resolve();
-});
-
 const makeFaceMatrix = (result) => new Promise((resolve, reject) => {
     try {
         let landmarksArr = [];
@@ -164,62 +158,7 @@ const detectedFaceToVector = face => new Promise(async (resolve, reject) => {
     }
 });
 
-// const clusterData = vectors => {
-//     let sumArr = [];
-//     for (let i = 0; i < vectors[0].length; ++i) sumArr.push(0);
-//
-//     for (let i = 0; i < vectors.length; ++i) {
-//         for (let j = 0; j < vectors[i].length; ++j)
-//             sumArr[j] += vectors[i][j];
-//     }
-//
-//     return [{centroid: sumArr.map(dat => dat / vectors.length)}];
-// };
-
-
-// const faceDetect = async (images) => {
-//     let promiseArr = [];
-//
-//     // image preprocessing.
-//     images.forEach(image => {
-//         const jsonData = getDetectedFace(image);
-//         promiseArr.push(imageProcessToMatrix(jsonData));
-//     });
-//
-//     // clustering.
-//     return Promise.all(promiseArr)
-//         .then(values => {
-//             let jsonIds = [];
-//             let vectors = [];
-//
-//             values.forEach(value => {
-//                 jsonIds.push(value.jsonId);
-//                 vectors.push(value.normalizedVector);
-//             });
-//
-//             return new Promise((resolve, reject) => {
-//                 try {
-//                     const result = pify(kmeans.clusterize)(vectors, {k: 1});
-//
-//                     resolve({
-//                         jsonIds,
-//                         result
-//                     });
-//                 } catch (e) {
-//                     reject(e);
-//                 }
-//             });
-//         })
-//         .catch(e => console.log(e));
-// };
-
-// const faceRegister;
 module.exports = {
     getDetectedFace,
-    trimFaceImageRotation,
-    trimFaceImageScale,
-    makeFaceMatrix,
-    detectedFaceToVector,
-    // faceDetect,
-    // clusterData
+    detectedFaceToVector
 };
