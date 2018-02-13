@@ -8,10 +8,11 @@ let config = {
 const envConfig = require('./config.json')[env];
 // console.log(envConfig);
 
-Object.keys(envConfig).forEach(key => config[key] = envConfig[key]);
+if (envConfig) Object.keys(envConfig).forEach(key => config[key] = envConfig[key]);
 
 if (env === 'production' || env === 'development') {
     config.PORT = process.env.PORT || config.PORT;
+    config.MONGODB_URI = process.env.MONGODB_URI || config.MONGODB_URI;
 }
 
 console.log(envConfig);
