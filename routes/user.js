@@ -75,6 +75,8 @@ router.post('/face-register', async (req, res) => { // 얼굴 등록
 });
 
 router.post('/emergency', async (req, res) => {
+    console.log('request received : ');
+    console.log(req);
     console.log('data received : ');
     console.log(req.body);
     // const data = req.body.data;
