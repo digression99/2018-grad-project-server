@@ -7,3 +7,6 @@
 
 # webstorm .idea
 .idea
+
+# test
+/tests
