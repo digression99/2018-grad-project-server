@@ -1,6 +1,7 @@
 const Image = require('../models/Image');
 const ImageWrapper = require('../models/ImageWrapper');
 const ProcessedDatum = require('../models/ProcessedDatum');
+const config = require('../config/config');
 
 const {detectedFaceToVector} = require('./face-detection');
 // const {getDetectedFaceFromFile} = require('../playground/getDetectedFaceFromFile');
@@ -11,8 +12,10 @@ const imagesToValues = (images, detectedTime) => new Promise(async (resolve, rej
         let processedDataIds = [];
 
         const values = await Promise.all(images.map(async image => {
-            // const processedDatum = await getDetectedFaceFromFile(image); // mock function.
-            const processedDatum = "test data";
+            let processedDatum;
+
+            if (config.ENV === 'development') processedDatum = await getDetectedFaceFromFile(image); // mock function.
+            else if (config.ENV === 'production') processedDatum = "test data";
 
             if (!processedDatum) throw new Error("no datum.");
 

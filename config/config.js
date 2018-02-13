@@ -3,6 +3,7 @@ const env = process.env.NODE_ENV || 'development';
 let config = {
     PORT : process.env.PORT || 3000,
     MONGODB_URI : "",
+    ENV : env
 };
 
 const envConfig = require('./config.json')[env];
