@@ -7,13 +7,18 @@ const mongoose = require('./db/mongoose');
 const apiRouter = require('./routes/api');
 const userRouter = require('./routes/user');
 
+// const helmet = require('helmet');
+// app.use(helmet());
+// const compression = require('compress');
+// app.use(compression());
+
 // mongoose connect
 mongoose.Promise = global.Promise;
 mongoose.connect(config.MONGODB_URI);
 
-process.on('uncaughtException', (err) => {
-    console.log('uncaught exception : ', err);
-});
+// process.on('uncaughtException', (err) => {
+//     console.log('uncaught exception : ', err);
+// });
 
 const app = express();
 
