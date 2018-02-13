@@ -6,7 +6,8 @@
   "author": "Kim Ilsik",
   "license": "MIT",
   "scripts" : {
-    "dev-server" : "node index.js"
+    "dev-server" : "node index.js",
+    "start" : "node index.js"
   },
   "dependencies": {
     "@google-cloud/vision": "^0.14.0",

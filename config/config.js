@@ -1,7 +1,7 @@
 const env = process.env.NODE_ENV || 'development';
 
 let config = {
-    PORT : 0,
+    PORT : process.env.PORT || 3000,
     MONGODB_URI : "",
 };
 
