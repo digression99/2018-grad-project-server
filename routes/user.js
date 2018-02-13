@@ -4,6 +4,7 @@ const uuidv1 = require('uuid/v1');
 
 const {imagesToValues} = require('../api/utility');
 
+const {fcm, clientToken} = require('../api/gcm');
 const net = require('../api/neural-network');
 
 let router = express.Router();
@@ -71,6 +72,26 @@ router.post('/face-register', async (req, res) => { // 얼굴 등록
             success: false
         });
     }
+});
+
+router.post('/emergency', async (req, res) => {
+    console.log('data received : ');
+    console.log(req.body);
+    // const data = req.body.data;
+    // console.log(data);
+
+    // fcm code
+
+    // find near neighbors in db.
+
+    // fcm.send(clientToken, message);
+
+    // fcm code
+
+    res.json({
+        message : "I got the data",
+        success : true
+    });
 });
 
 module.exports = router;
