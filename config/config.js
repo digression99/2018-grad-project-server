@@ -16,7 +16,7 @@ if (env === 'production' || env === 'development') {
     config.MONGODB_URI = process.env.MONGODB_URI || config.MONGODB_URI;
 }
 
-console.log(envConfig);
+console.log(config);
 
 if (require.main == module) {
     console.log(config);

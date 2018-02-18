@@ -14,7 +14,7 @@ const imagesToValues = (images, detectedTime) => new Promise(async (resolve, rej
         const values = await Promise.all(images.map(async image => {
             let processedDatum;
 
-            if (config.ENV === 'development') processedDatum = await getDetectedFaceFromFile(image); // mock function.
+            if (config.ENV === 'development') processedDatum = await require('../playground/getDetectedFaceFromFile').getDetectedFaceFromFile(image); // mock function.
             else if (config.ENV === 'production') processedDatum = "test data";
 
             if (!processedDatum) throw new Error("no datum.");

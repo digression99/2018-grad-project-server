@@ -24,7 +24,7 @@ const rotated = math.multiply(math.multiply(math.multiply(original, Rx), Ry), Rz
 
 console.log(rotated);
 //console.log(math.multiply(Rx, original));
-
+ㅓㅗㅓㅗ허ㅗ허ㅗ허ㅗㅎ
 //
 // console.log(math.round(math.e, 3));
 //

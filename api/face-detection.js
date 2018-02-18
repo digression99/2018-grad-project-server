@@ -2,7 +2,7 @@ const vision = require('@google-cloud/vision');
 const math = require('mathjs');
 const pify = require('pify');
 
-const LANDMARK_LENGTH = 34; // MAX 34
+const LANDMARK_LENGTH = 28; // MAX 34
 const NOSE_POS = 7;
 
 const client = new vision.ImageAnnotatorClient();
@@ -131,9 +131,13 @@ const makeMatrixToVector = (matrix) => {
     return normalizedVector;
 };
 
-const normalizeVector = v => v.map(dat => {
+const normalizeVector = v => v.map((dat, index) => {
     let val = (dat / 1000) + 0.5;
-    if (val > 1.0) val = 1;
+    if (val > 1.0) {
+        console.log('index : ', index);
+        console.log('data : ', dat);
+        val = 0.99999;
+    }
     return val;
 }); // better to have here.
 
