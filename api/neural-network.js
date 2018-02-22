@@ -86,7 +86,7 @@ class Net {
         return new Promise((resolve, reject) => {
             try {
                 const res = this.net.train(this.dataSet, {
-                    iterations: 200000,    // the maximum times to iterate the training data
+                    iterations: 30000,    // the maximum times to iterate the training data
                     errorThresh: 0.001,   // the acceptable error percentage from training data
                     log: false,           // true to use console.log, when a function is supplied it is used
                     logPeriod: 100,        // iterations between logging out
@@ -98,7 +98,8 @@ class Net {
                         }
                     },       // a periodic call back that can be triggered while training
                     callbackPeriod: 100,   // the number of iterations through the training data between callback calls
-                    timeout: Infinity     // the max number of milliseconds to train for
+                    timeout: Infinity     // the max number of milliseconds to train forls
+
                 });
                 resolve(res);
             } catch (e) {
